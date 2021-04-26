@@ -3,11 +3,12 @@ A Simple ToDo System to learn the Usage of express and VueJS
 
 ## TODO
 
-* [ ] Add Client
-    * [ ]  Use Vue
-    * [ ] Display Todos
-    * [ ] Mark Todos
-    * [ ] Delete Todos
+* [x] Add Client
+    * [x]  Use Vue
+    * [x] Display Todos
+    * [x] Mark Todos
+    * [x] Delete Todos
+    * [ ] Add an UniqueID to todos Objects
     * [ ] Edit Todos
 * [ ] Add Database Integration
 * [ ] Bring this SHIT online!!
