@@ -6,7 +6,8 @@ const bodyParser = require('body-parser');
 
 app.use(morgan('tiny'));
 app.use(cors());
-app.use(bodyParser.json())
+app.use(express.json());
+// app.use(bodyParser.json())
 const todos = new Map();
 
 let ID = randomID();
@@ -28,10 +29,14 @@ app.get('/todos', (req, res) => {
     });
 });
 
+app.get('/cleartodos', (req, res) => {
+    todos.clear();
+    save();
+});
+
 app.post('/createtodo', (req, res) => {
     const todo = req.body;
     todo.ID = randomID();
-    console.log(todo);
     todos.set(todo.ID, todo);
     save();
     res.json(todo);

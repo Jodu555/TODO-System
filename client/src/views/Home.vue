@@ -10,7 +10,7 @@
 
     <button @click="clearTodos()">Delete all Todos</button>
 
-    <h5>Aktuell: {{ todos.length }} Todo/s</h5>
+    <h5>Aktuell: {{ todoCount }} Todo/s</h5>
 
     <table class="u-full-width">
       <thead>
@@ -21,14 +21,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="todo in todos" :key="todo.todo">
-          <td>{{ todo.todo }}</td>
+        <tr v-for="todoID in todoMapToList" :key="todoID">
+          <td>{{ todoMap.get(todoID).todo }} | {{todoID}}</td>
           <td>
-            <button v-if="!todo.checked" @click="editTodo(todo)">Erledigt</button>
-            <button v-if="todo.checked" @click="editTodo(todo)">Rückgängig</button>
+            <button v-if="!todoMap.get(todoID).checked" @click="editTodo(todoID)">Erledigt</button>
+            <button v-if="todoMap.get(todoID).checked" @click="editTodo(todoID)">Rückgängig</button>
           </td>
-
-          <td><button @click="deleteTodo(todo.todo)">Löschen</button></td>
+          <td><button @click="deleteTodo(todoID)">Löschen</button></td>
         </tr>
       </tbody>
     </table>
@@ -38,19 +37,49 @@
 <script>
 // @ is an alias to /src
 
+const API_URL = 'http://localhost:3000/'
+
 export default {
   name: "Home",
   data() {
     return {
       newTodo: "",
-      todos: [],
+      todoMap: new Map(),
     };
   },
-  methods: {
-    clearTodos() {
-      this.todos.clear();
+  created() {
+    this.fetchTodos();
+  },
+  computed: {
+    todoCount: function() {
+      let count = 0;
+      this.todoMap.forEach((value, key, map) => {
+        if(!value.checked)
+          count++;
+      })
+      return count;
     },
-    addTodo() {
+    todoMapToList: function () {
+      const todos = [];
+      this.todoMap.forEach((a, key, map) => {
+        todos.push(key);
+      })
+      return todos;
+    }
+  },
+  methods: {
+    fetchTodos() {
+      fetch(API_URL + 'todos')
+        .then(response => response.json())
+        .then(response => {
+          this.todoMap = new Map(response.todos);
+      });
+    },
+    clearTodos() {
+      this.todoMap.clear();
+      fetch(API_URL + 'cleartodos');
+    },
+    async addTodo() {
       if(this.newTodo == "") {
         return
       }
@@ -58,16 +87,31 @@ export default {
         todo: this.newTodo,
         checked: false,
       }
-      this.todos.push(todo);
+      
       this.newTodo = "";
+      const response = await fetch(API_URL + 'createtodo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(todo),
+      });
+      const json = await response.json();
+      this.todoMap.set(json.ID, json);
     },
-    editTodo(todo) {
-      const todoIndex = this.todos.indexOf(todo);
-      this.todos[todoIndex].checked = !this.todos[todoIndex].checked;
+    editTodo(todoID) {
+      this.todoMap.get(todoID).checked = !this.todoMap.get(todoID).checked;
+      fetch(API_URL + 'edittodo/' + todoID, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(this.todoMap.get(todoID)),
+      });
     },
-    deleteTodo(todo) {
-      const todoIndex = this.todos.indexOf(todo);
-      this.todos.splice(todoIndex, 1);
+    deleteTodo(todoID) {
+      this.todoMap.delete(todoID);
+      fetch(API_URL + 'deletetodo/' + todoID);
     },
   },
 };

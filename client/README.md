@@ -1,4 +1,4 @@
-# client
+# test-vue-app
 
 ## Project setup
 ```
