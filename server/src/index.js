@@ -37,9 +37,12 @@ app.get('/cleartodos', (req, res) => {
 app.post('/createtodo', (req, res) => {
     const todo = req.body;
     todo.ID = randomID();
-    todos.set(todo.ID, todo);
-    save();
-    res.json(todo);
+    if (validateTodo(todo)) {
+        todos.set(todo.ID, todo);
+        save();
+        res.json(todo);
+    }
+
 });
 
 app.post('/edittodo/:id', (req, res) => {
@@ -80,6 +83,10 @@ app.get('/deletetodo/:id', (req, res) => {
     });
 
 });
+
+function validateTodo(todo) {
+    return todo && todo.ID && todo.todo && todo.todo.trim() !== '';
+}
 
 function save() {
     //Databse Integration

@@ -1,13 +1,13 @@
 <template>
     <div class="user">
-        <div>User {{ $route.params.id }}</div>
+        <h1>This is an Account page</h1>
     </div>
 </template>
 <script>
 export default {
     name: "User",
     created() {
-        console.log(this.$route.params.id);
+        
     },
 };
 </script>

@@ -9,7 +9,7 @@ A Simple ToDo System to learn the Usage of express and VueJS
     * [x] Mark Todos
     * [x] Delete Todos
     * [x] Add an UniqueID to todos Objects
-    * [ ] Edit Todos
+    * [x] Edit Todos
 * [ ] Add Database Integration
 * [ ] Bring this SHIT online!!
 

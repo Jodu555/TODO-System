@@ -7,10 +7,10 @@ const routes = [{
         component: Home
     },
     {
-        path: '/user/:id',
+        path: '/account',
         name: 'User',
         component: () => {
-            return import ('../views/User.vue')
+            return import ('../views/Account.vue')
         }
     },
     {
